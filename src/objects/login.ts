@@ -1,6 +1,6 @@
 module OOFB {
     export function login(callback : (oofb : any) => void) {
-        OOFB.api_key = Math.random().toString();
+        //API.appid = Math.random().toString();
         
         var login = new OOFB.BaseObject();
         login.success(function(p) {
@@ -9,7 +9,7 @@ module OOFB {
         return login;
     }
     export function logout(callback : (oofb : any) => void) {
-        OOFB.api_key = Math.random().toString();
+        //API.appid = Math.random().toString();
         
         var logout = new OOFB.BaseObject();
         logout.success(function(p) {

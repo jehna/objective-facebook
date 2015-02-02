@@ -15,6 +15,7 @@
     "typescript": "~1.4.1",
     "grunt-typescript": "~0.6.1",
     "grunt-open": "~0.2.3",
-    "grunt-express": "~1.4.1"
+    "grunt-express": "~1.4.1",
+    "grunt-wrap": "~0.3.0"
   }
 }

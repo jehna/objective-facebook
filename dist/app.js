@@ -1,12 +1,8 @@
-var OOFB;
-(function (OOFB) {
-    OOFB._api_key;
-    function API(api_key) {
-        OOFB._api_key = api_key;
-        return OOFB;
-    }
-    OOFB.API = API;
-})(OOFB || (OOFB = {}));
+function OOFB(appid) {
+    var OOFB = this;
+    this.appid = appid;
+    
+    
 var OOFB;
 (function (OOFB) {
     var BaseObject = (function () {
@@ -121,7 +117,7 @@ var OOFB;
 var OOFB;
 (function (OOFB) {
     function login(callback) {
-        OOFB._api_key = Math.random().toString();
+        //API.appid = Math.random().toString();
         var login = new OOFB.BaseObject();
         login.success(function (p) {
             callback(OOFB);
@@ -130,7 +126,7 @@ var OOFB;
     }
     OOFB.login = login;
     function logout(callback) {
-        OOFB._api_key = Math.random().toString();
+        //API.appid = Math.random().toString();
         var logout = new OOFB.BaseObject();
         logout.success(function (p) {
             callback(OOFB);
@@ -146,3 +142,5 @@ var OOFB;
 /// <reference path="login.ts"/>
 /// <reference path="objects/oofb.ts"/>
 //# sourceMappingURL=app.js.map
+
+}

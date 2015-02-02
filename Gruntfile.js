@@ -1,6 +1,15 @@
 module.exports = function(grunt) {
-
+    var wrapper = grunt.file.read('src/wrapper.js').split('CONTENT');
     grunt.initConfig({
+        wrap: {
+            default: {
+                src: ['dist/*.js'],
+                dest: '.',
+                options: {
+                    wrapper: wrapper
+                }
+            }
+        },
         express: {
             all: {
                 options: {
@@ -25,7 +34,7 @@ module.exports = function(grunt) {
         },
         watch: {
             files: ['src/**/*.ts', 'src/*.ts'],
-            tasks: ['typescript'],
+            tasks: ['typescript', 'wrap'],
             options: {
                 livereload: true
             }
@@ -40,8 +49,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-express');
+    grunt.loadNpmTasks('grunt-wrap');
     grunt.loadNpmTasks('grunt-open');
     
-    grunt.registerTask('default', ['typescript', 'express', 'open', 'watch']);
+    grunt.registerTask('default', ['typescript', 'wrap', 'express', 'open', 'watch']);
 
 };
