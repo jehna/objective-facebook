@@ -1,7 +1,7 @@
 module OOFB {
-    export var _api_key : string;
-    export function API(api_key : string) {
-        OOFB._api_key = api_key;
+    export var appid : number;
+    export function API(appid : number) {
+        OOFB.appid = appid;
         return OOFB;
     }
 }

@@ -1,6 +1,16 @@
 module.exports = function(grunt) {
 
     grunt.initConfig({
+        express: {
+            all: {
+                options: {
+                    port: 9121,
+                    hostname: "localhost",
+                    bases: ['examples', 'dist'],
+                    livereload: true
+                }
+            }
+        },
         typescript: {
             dist: {
                 src: ['src/app.ts'],
@@ -15,13 +25,23 @@ module.exports = function(grunt) {
         },
         watch: {
             files: ['src/**/*.ts', 'src/*.ts'],
-            tasks: ['typescript']
+            tasks: ['typescript'],
+            options: {
+                livereload: true
+            }
+        },
+        open: {
+            all: {
+                path: 'http://localhost:<%= express.all.options.port %>/user.html'
+            }
         }
-  });
+    });
 
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-typescript');
-
-  grunt.registerTask('default', ['typescript', 'watch']);
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-typescript');
+    grunt.loadNpmTasks('grunt-express');
+    grunt.loadNpmTasks('grunt-open');
+    
+    grunt.registerTask('default', ['typescript', 'express', 'open', 'watch']);
 
 };

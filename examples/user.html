@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>User example</title>
+    <script src="app.js"></script>
+</head>
+
+<body>
+<script>
+var API = OOFB.API(816021041756653);
+
+var user = new API.User(100000475343767);
+user.success(function(image) {
+    console.log(image);
+});
+/*
+var FB = OOFB.API('API_KEY_HERE');
+FB.login(function(FB) {
+    var me = new FB.User();
+    console.log("Logged in:", me);
+    FB.logout(function(FB) {
+        console.log("Logged out");
+    });
+});
+*/
+</script>
+
+
+</body>
+</html>
