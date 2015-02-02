@@ -8,22 +8,12 @@
 
 <body>
 <script>
-var API = new OOFB(816021041756653);
+var API = new OOFB('816021041756653|sBUcW6Wy24ivI5fzOobCwixzaR4');
 
 var user = new API.User(100000475343767);
-user.success(function(image) {
-    console.log(image);
+user.success(function(user) {
+    console.log(user);
 });
-/*
-var FB = OOFB.API('API_KEY_HERE');
-FB.login(function(FB) {
-    var me = new FB.User();
-    console.log("Logged in:", me);
-    FB.logout(function(FB) {
-        console.log("Logged out");
-    });
-});
-*/
 </script>
 
 

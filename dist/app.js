@@ -1,8 +1,10 @@
-function OOFB(appid) {
+function OOFB(access_token) {
     var OOFB = this;
-    this.appid = appid;
+    this.access_token = access_token;
     
     
+global = window ? window : global;
+var _global = window ? 'window' : 'global';
 var OOFB;
 (function (OOFB) {
     var BaseObject = (function () {
@@ -18,7 +20,7 @@ var OOFB;
                 // Call this thingie when fetch is complete
                 var self = this;
                 this.__fetch(function (data) {
-                    callback(self);
+                    callback(this);
                 });
             }
             return this;
@@ -37,7 +39,9 @@ var OOFB;
         };
         BaseObject.prototype.__fetch = function (setterCallback) {
             // Construct an FB API object to fetch data for this motherficker
-            setterCallback(null);
+            OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, null, function () {
+                setterCallback.apply(this, arguments);
+            });
             return this;
         };
         return BaseObject;
@@ -96,16 +100,19 @@ var OOFB;
                 this.graphURL = '/me';
             }
         }
+        User.prototype.__fetch = function (setterCallback) {
+            // Construct an FB API object to fetch data for this motherficker
+            _super.prototype.__fetch.call(this, function (data) {
+                for (var name in data) {
+                    this[name] = data[name];
+                }
+                setterCallback.apply(this, arguments);
+            });
+            return this;
+        };
         Object.defineProperty(User.prototype, "image", {
             get: function () {
-                return new OOFB.Image(this.graphURL + '/image');
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(User.prototype, "feed", {
-            get: function () {
-                return new OOFB.Image(this.graphURL + '/image');
+                return new OOFB.Image(this.graphURL + '/picture');
             },
             enumerable: true,
             configurable: true
@@ -135,12 +142,56 @@ var OOFB;
     }
     OOFB.logout = logout;
 })(OOFB || (OOFB = {}));
+var OOFB;
+(function (OOFB) {
+    var Graph;
+    (function (Graph) {
+        (function (Method) {
+            Method[Method["GET"] = 0] = "GET";
+            Method[Method["POST"] = 1] = "POST";
+            Method[Method["PUT"] = 2] = "PUT";
+            Method[Method["DELETE"] = 3] = "DELETE";
+        })(Graph.Method || (Graph.Method = {}));
+        var Method = Graph.Method;
+        global.OOFB.__globalCallbacks = {};
+        function serialize(obj) {
+            var str = [];
+            for (var p in obj) {
+                if (obj.hasOwnProperty(p)) {
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                }
+            }
+            return str.join("&");
+        }
+        var uniq = 0;
+        function api(endpoint, method, params, callback) {
+            var cbname = "__graph__" + (uniq++).toString();
+            params = params || {};
+            params['callback'] = _global + ".OOFB.__globalCallbacks." + cbname;
+            params['method'] = method;
+            params['access_token'] = access_token;
+            var url = "https://graph.facebook.com/v2.1" + endpoint + "?" + serialize(params);
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            var callee = this;
+            global.OOFB.__globalCallbacks[cbname] = function () {
+                callback.apply(callee, arguments);
+                global.OOFB.__globalCallbacks[cbname] = null;
+                document.getElementsByTagName('head')[0].removeChild(script);
+            };
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+        Graph.api = api;
+    })(Graph = OOFB.Graph || (OOFB.Graph = {}));
+})(OOFB || (OOFB = {}));
 /// <reference path="oofbapi.ts"/>
 /// <reference path="baseobject.ts"/>
 /// <reference path="image.ts"/>
 /// <reference path="user.ts"/>
 /// <reference path="login.ts"/>
+/// <reference path="graph.ts"/>
 /// <reference path="objects/oofb.ts"/>
-//# sourceMappingURL=app.js.map
+
 
 }

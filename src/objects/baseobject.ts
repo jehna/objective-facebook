@@ -16,7 +16,7 @@ module OOFB {
                 // Call this thingie when fetch is complete
                 var self = this;
                 this.__fetch(function(data : any) {
-                    callback(self);
+                    callback(this);
                 });
             }
             
@@ -37,7 +37,10 @@ module OOFB {
         }
         __fetch(setterCallback : (data: any) => void) {
             // Construct an FB API object to fetch data for this motherficker
-            setterCallback(null);
+            OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, null, function() {
+                setterCallback.apply(this, arguments);
+            });
+            
             return this;
         }
     

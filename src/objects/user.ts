@@ -26,12 +26,20 @@ module OOFB {
             }
         }
         
-        get image() {
-            return new OOFB.Image(this.graphURL + '/image');
+        __fetch(setterCallback : (data: any) => void) {
+            // Construct an FB API object to fetch data for this motherficker
+            super.__fetch(function(data) {
+                for(var name in data) {
+                    this[name] = data[name];
+                }
+                setterCallback.apply(this, arguments);
+            });
+            
+            return this;
         }
         
-        get feed() {
-            return new OOFB.Image(this.graphURL + '/image');
+        get image() {
+            return new OOFB.Image(this.graphURL + '/picture');
         }
     }
 }
