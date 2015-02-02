@@ -4,5 +4,6 @@
 /// <reference path="user.ts"/>
 /// <reference path="login.ts"/>
 /// <reference path="graph.ts"/>
+/// <reference path="debug.ts"/>
 
 

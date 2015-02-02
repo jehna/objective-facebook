@@ -7,7 +7,9 @@ module OOFB {
             DELETE
         }
         
-        global.OOFB.__globalCallbacks = {};
+        var instance_namespace = "__ns__" + ((Math.random()*100000)|0).toString(16);
+        global.OOFB.__globalCallbacks = global.OOFB.__globalCallbacks || {};
+        global.OOFB.__globalCallbacks[instance_namespace] = {};
         
         function serialize(obj) {
             var str = [];
@@ -26,20 +28,20 @@ module OOFB {
             var cbname = "__graph__" + (uniq++).toString();
             
             params = params || {};
-            params['callback'] = _global + ".OOFB.__globalCallbacks." + cbname;
+            params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
             
-            var url : string = "https://graph.facebook.com/v2.1" + endpoint + "?" + serialize(params);
+            var url : string = "https://graph.facebook.com/v2.2" + endpoint + "?" + serialize(params);
             
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = url;
             
             var callee = this;
-            global.OOFB.__globalCallbacks[cbname] = function() {
+            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function() {
                 callback.apply(callee, arguments);
-                global.OOFB.__globalCallbacks[cbname] = null;
+                global.OOFB.__globalCallbacks[instance_namespace][cbname] = null;
                 document.getElementsByTagName('head')[0].removeChild(script);
             }
             

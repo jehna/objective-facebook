@@ -4,8 +4,8 @@ module OOFB {
         graphURL : string;
         fetched : boolean;
         
-        constructor() {
-            this.graphURL = '';
+        constructor(graphURL : string = '') {
+            this.graphURL = graphURL;
             this.fetched = false;
         }
         

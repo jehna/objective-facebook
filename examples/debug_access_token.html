@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>User Image example</title>
+    <script src="app.js"></script>
+</head>
+
+<body>
+<script>
+var API = new OOFB('816021041756653|sBUcW6Wy24ivI5fzOobCwixzaR4');
+
+API.Debug.access_token.success(function(access_token) {
+    console.log(access_token);
+});
+
+var API2 = new OOFB('CAALmKrRSue0BAHxcEsq7msy5mUQHZAErUieuNaEi1oEqlywWe7PWZC03mowBYr28fhYZCYRjxSeKFUj735cUg4uNIApqqRPqY8jOgPmsPt0wTTZCQklUZCjfM68QrO7IkN9x3GYCqbtpxmgPtiwD1JdOrwifBZAcHiiPw6QOTOFlpsIpOHakTdzgj2ZAzNnTXVJytO0N3PYGWUDXGcgPom2FWUIAQiVKPAZD');
+API2.Debug.access_token.success(function(access_token) {
+    console.log(access_token);
+});
+
+</script>
+
+
+</body>
+</html>

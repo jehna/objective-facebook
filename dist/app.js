@@ -8,8 +8,9 @@ var _global = window ? 'window' : 'global';
 var OOFB;
 (function (OOFB) {
     var BaseObject = (function () {
-        function BaseObject() {
-            this.graphURL = '';
+        function BaseObject(graphURL) {
+            if (graphURL === void 0) { graphURL = ''; }
+            this.graphURL = graphURL;
             this.fetched = false;
         }
         BaseObject.prototype.success = function (callback) {
@@ -184,7 +185,9 @@ var OOFB;
             Method[Method["DELETE"] = 3] = "DELETE";
         })(Graph.Method || (Graph.Method = {}));
         var Method = Graph.Method;
-        global.OOFB.__globalCallbacks = {};
+        var instance_namespace = "__ns__" + ((Math.random() * 100000) | 0).toString(16);
+        global.OOFB.__globalCallbacks = global.OOFB.__globalCallbacks || {};
+        global.OOFB.__globalCallbacks[instance_namespace] = {};
         function serialize(obj) {
             var str = [];
             for (var p in obj) {
@@ -198,17 +201,17 @@ var OOFB;
         function api(endpoint, method, params, callback) {
             var cbname = "__graph__" + (uniq++).toString();
             params = params || {};
-            params['callback'] = _global + ".OOFB.__globalCallbacks." + cbname;
+            params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
-            var url = "https://graph.facebook.com/v2.1" + endpoint + "?" + serialize(params);
+            var url = "https://graph.facebook.com/v2.2" + endpoint + "?" + serialize(params);
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = url;
             var callee = this;
-            global.OOFB.__globalCallbacks[cbname] = function () {
+            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function () {
                 callback.apply(callee, arguments);
-                global.OOFB.__globalCallbacks[cbname] = null;
+                global.OOFB.__globalCallbacks[instance_namespace][cbname] = null;
                 document.getElementsByTagName('head')[0].removeChild(script);
             };
             document.getElementsByTagName('head')[0].appendChild(script);
@@ -216,12 +219,49 @@ var OOFB;
         Graph.api = api;
     })(Graph = OOFB.Graph || (OOFB.Graph = {}));
 })(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
+var OOFB;
+(function (OOFB) {
+    var AccessToken = (function (_super) {
+        __extends(AccessToken, _super);
+        function AccessToken() {
+            _super.call(this, '/debug_token');
+        }
+        AccessToken.prototype.__fetch = function (setterCallback) {
+            _super.prototype.__fetch.call(this, function (data) {
+                for (var name in data.data) {
+                    this[name] = data.data[name];
+                }
+                setterCallback.apply(this, arguments);
+            }, {
+                input_token: access_token,
+                access_token: access_token
+            });
+            return this;
+        };
+        return AccessToken;
+    })(OOFB.BaseObject);
+    var Debug = (function () {
+        function Debug() {
+        }
+        Object.defineProperty(Debug, "access_token", {
+            get: function () {
+                return new AccessToken();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Debug;
+    })();
+    OOFB.Debug = Debug;
+})(OOFB || (OOFB = {}));
 /// <reference path="oofbapi.ts"/>
 /// <reference path="baseobject.ts"/>
 /// <reference path="image.ts"/>
 /// <reference path="user.ts"/>
 /// <reference path="login.ts"/>
 /// <reference path="graph.ts"/>
+/// <reference path="debug.ts"/>
 /// <reference path="objects/oofb.ts"/>
 
 
