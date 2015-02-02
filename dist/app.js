@@ -37,9 +37,9 @@ var OOFB;
             }
             return this;
         };
-        BaseObject.prototype.__fetch = function (setterCallback) {
+        BaseObject.prototype.__fetch = function (setterCallback, data) {
             // Construct an FB API object to fetch data for this motherficker
-            OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, null, function () {
+            OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, data, function () {
                 setterCallback.apply(this, arguments);
             });
             return this;
@@ -59,26 +59,57 @@ var OOFB;
 (function (OOFB) {
     var Image = (function (_super) {
         __extends(Image, _super);
-        function Image(graphURL) {
+        function Image(graphURL, width, height) {
             _super.call(this);
             this.graphURL = graphURL;
+            if (width || height) {
+                this.width = width;
+                this.height = height;
+            }
+            else {
+                this.width = 320;
+                this.height = 320;
+            }
         }
-        Image.prototype.__fetch = function (callback) {
-            var self = this;
+        Image.prototype.__fetch = function (setterCallback) {
+            var params = {
+                redirect: false
+            };
+            if (this.width)
+                params['width'] = this.width / 2;
+            if (this.height)
+                params['height'] = this.height / 2;
             _super.prototype.__fetch.call(this, function (data) {
-                // TODO: Make this work like it's done in the FB API
-                console.log(self);
-                self.url = 'http://placekitten.com/300/200';
-                callback(data);
-            });
+                this.url = data.data.url;
+                setterCallback.apply(this, arguments);
+            }, params);
             return this;
         };
         return Image;
     })(OOFB.BaseObject);
     OOFB.Image = Image;
 })(OOFB || (OOFB = {}));
-/// <reference path="baseobject.ts"/>
 /// <reference path="image.ts"/>
+var OOFB;
+(function (OOFB) {
+    var UserImage = (function (_super) {
+        __extends(UserImage, _super);
+        function UserImage() {
+            _super.apply(this, arguments);
+        }
+        Object.defineProperty(UserImage.prototype, "original", {
+            get: function () {
+                return new OOFB.Image(this.graphURL + '/picture', 1000000);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return UserImage;
+    })(OOFB.Image);
+    OOFB.UserImage = UserImage;
+})(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
+/// <reference path="userimage.ts"/>
 var OOFB;
 (function (OOFB) {
     var User = (function (_super) {
@@ -112,7 +143,7 @@ var OOFB;
         };
         Object.defineProperty(User.prototype, "image", {
             get: function () {
-                return new OOFB.Image(this.graphURL + '/picture');
+                return new OOFB.UserImage(this.graphURL + '/picture');
             },
             enumerable: true,
             configurable: true

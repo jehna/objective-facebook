@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         },
         open: {
             all: {
-                path: 'http://localhost:<%= express.all.options.port %>/user.html'
+                path: 'http://localhost:<%= express.all.options.port %>/userimage.html'
             }
         }
     });

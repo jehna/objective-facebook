@@ -35,9 +35,9 @@ module OOFB {
             }
             return this;
         }
-        __fetch(setterCallback : (data: any) => void) {
+        __fetch(setterCallback : (data: any) => void, data? : any) {
             // Construct an FB API object to fetch data for this motherficker
-            OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, null, function() {
+            OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, data, function() {
                 setterCallback.apply(this, arguments);
             });
             

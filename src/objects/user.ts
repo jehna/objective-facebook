@@ -1,5 +1,5 @@
 /// <reference path="baseobject.ts"/>
-/// <reference path="image.ts"/>
+/// <reference path="userimage.ts"/>
 
 module OOFB {
     export class User extends BaseObject {
@@ -39,7 +39,7 @@ module OOFB {
         }
         
         get image() {
-            return new OOFB.Image(this.graphURL + '/picture');
+            return new UserImage(this.graphURL + '/picture');
         }
     }
 }

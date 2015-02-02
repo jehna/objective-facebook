@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>User Image example</title>
+    <script src="app.js"></script>
+</head>
+
+<body>
+<script>
+var API = new OOFB('816021041756653|sBUcW6Wy24ivI5fzOobCwixzaR4');
+
+var user = new API.User(100000475343767);
+user.image.success(function(image) {
+    var imgNode = document.createElement("img");
+    imgNode.src = image.url;
+    document.body.appendChild(imgNode);
+});
+
+var user = new API.User(100000475343767);
+user.image.original.success(function(image) {
+    var imgNode = document.createElement("img");
+    imgNode.src = image.url;
+    document.body.appendChild(imgNode);
+});
+</script>
+
+
+</body>
+</html>
