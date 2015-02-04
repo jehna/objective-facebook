@@ -33,8 +33,8 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['src/**/*.ts', 'src/*.ts'],
-            tasks: ['typescript', 'wrap'],
+            files: ['src/**/*.ts', 'src/*.ts', 'test/**/*.js'],
+            tasks: ['typescript', 'wrap', 'test'],
             options: {
                 livereload: true
             }
@@ -43,15 +43,27 @@ module.exports = function(grunt) {
             all: {
                 path: 'http://localhost:<%= express.all.options.port %>/userimage.html'
             }
+        },
+        karma: {
+            options: {
+                // point all tasks to karma config file
+                configFile: 'test/karma-conf.js'
+            },
+            unit: {
+                // run tests once instead of continuously
+                singleRun: true
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-express');
+    grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-wrap');
     grunt.loadNpmTasks('grunt-open');
     
-    grunt.registerTask('default', ['typescript', 'wrap', 'express', 'open', 'watch']);
+    grunt.registerTask('default', ['typescript', 'wrap', 'express', 'open', 'test', 'watch']);
+    grunt.registerTask('test', ['karma']);
 
 };

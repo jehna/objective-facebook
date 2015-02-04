@@ -16,6 +16,11 @@
     "grunt-typescript": "~0.6.1",
     "grunt-open": "~0.2.3",
     "grunt-express": "~1.4.1",
-    "grunt-wrap": "~0.3.0"
+    "grunt-wrap": "~0.3.0",
+    "karma": "~0.12.31",
+    "grunt-karma": "~0.10.1",
+    "jasmine-core": "~2.2.0",
+    "karma-jasmine": "~0.3.5",
+    "karma-phantomjs-launcher": "~0.1.4"
   }
 }

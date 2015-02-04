@@ -25,8 +25,8 @@ module OOFB {
             var params = {
                 redirect: false
             }
-            if (this.width) params['width'] = this.width/2;
-            if (this.height) params['height'] = this.height/2;
+            if (this.width) params['width'] = this.width;
+            if (this.height) params['height'] = this.height;
             
             super.__fetch(function(data) {
                 this.url = data.data.url;

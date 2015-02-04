@@ -38,6 +38,7 @@ module OOFB {
         __fetch(setterCallback : (data: any) => void, data? : any) {
             // Construct an FB API object to fetch data for this motherficker
             OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, data, function() {
+                this.fetched = true;
                 setterCallback.apply(this, arguments);
             });
             

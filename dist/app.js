@@ -41,6 +41,7 @@ var OOFB;
         BaseObject.prototype.__fetch = function (setterCallback, data) {
             // Construct an FB API object to fetch data for this motherficker
             OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, data, function () {
+                this.fetched = true;
                 setterCallback.apply(this, arguments);
             });
             return this;
@@ -77,9 +78,9 @@ var OOFB;
                 redirect: false
             };
             if (this.width)
-                params['width'] = this.width / 2;
+                params['width'] = this.width;
             if (this.height)
-                params['height'] = this.height / 2;
+                params['height'] = this.height;
             _super.prototype.__fetch.call(this, function (data) {
                 this.url = data.data.url;
                 setterCallback.apply(this, arguments);

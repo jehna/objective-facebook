@@ -14,6 +14,9 @@ var user = new API.User(100000475343767);
 user.image.success(function(image) {
     var imgNode = document.createElement("img");
     imgNode.src = image.url;
+    imgNode.onload = function() {
+        console.log(imgNode.naturalWidth, imgNode.naturalHeight);
+    }
     document.body.appendChild(imgNode);
 });
 
