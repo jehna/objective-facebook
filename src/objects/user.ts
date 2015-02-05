@@ -1,5 +1,7 @@
 /// <reference path="baseobject.ts"/>
 /// <reference path="userimage.ts"/>
+/// <reference path="album.ts"/>
+/// <reference path="collection.ts"/>
 
 module OOFB {
     export class User extends BaseObject {
@@ -38,8 +40,18 @@ module OOFB {
             return this;
         }
         
-        get image() {
+        get albums() : AlbumCollection {
+            // TODO: This is a stub
+            return new AlbumCollection(this.graphURL + '/albums');
+        }
+        
+        get image() : UserImage {
+            return this.picture;
+        }
+        
+        get picture() : UserImage {
             return new UserImage(this.graphURL + '/picture');
         }
+        
     }
 }

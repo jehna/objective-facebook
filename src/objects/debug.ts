@@ -15,7 +15,7 @@ module OOFB {
                 setterCallback.apply(this, arguments);
             }, {
                 input_token: access_token,
-                access_token: access_token
+                //access_token: access_token // Disabled for now, should not need this
             });
             return this;
         }

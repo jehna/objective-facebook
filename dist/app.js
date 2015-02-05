@@ -99,7 +99,48 @@ var OOFB;
     OOFB.UserImage = UserImage;
 })(OOFB || (OOFB = {}));
 /// <reference path="baseobject.ts"/>
+var OOFB;
+(function (OOFB) {
+    var Collection = (function (_super) {
+        __extends(Collection, _super);
+        function Collection() {
+            _super.apply(this, arguments);
+        }
+        return Collection;
+    })(OOFB.BaseObject);
+    OOFB.Collection = Collection;
+})(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
+/// <reference path="collection.ts"/>
+var OOFB;
+(function (OOFB) {
+    var Album = (function (_super) {
+        __extends(Album, _super);
+        function Album() {
+            _super.apply(this, arguments);
+        }
+        return Album;
+    })(OOFB.BaseObject);
+    OOFB.Album = Album;
+    var AlbumCollection = (function (_super) {
+        __extends(AlbumCollection, _super);
+        function AlbumCollection() {
+            _super.apply(this, arguments);
+        }
+        AlbumCollection.prototype.__fetch = function (setterCallback) {
+            _super.prototype.__fetch.call(this, function (data) {
+                console.log(data);
+            });
+            return this;
+        };
+        return AlbumCollection;
+    })(OOFB.Collection);
+    OOFB.AlbumCollection = AlbumCollection;
+})(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
 /// <reference path="userimage.ts"/>
+/// <reference path="album.ts"/>
+/// <reference path="collection.ts"/>
 var OOFB;
 (function (OOFB) {
     var User = (function (_super) {
@@ -131,7 +172,21 @@ var OOFB;
             });
             return this;
         };
+        Object.defineProperty(User.prototype, "albums", {
+            get: function () {
+                return new OOFB.AlbumCollection(this.graphURL + '/albums');
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(User.prototype, "image", {
+            get: function () {
+                return this.picture;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "picture", {
             get: function () {
                 return new OOFB.UserImage(this.graphURL + '/picture');
             },
@@ -225,7 +280,6 @@ var OOFB;
                 setterCallback.apply(this, arguments);
             }, {
                 input_token: access_token,
-                access_token: access_token
             });
             return this;
         };
