@@ -3,6 +3,7 @@ module OOFB {
         
         graphURL : string;
         fetched : boolean;
+        apiVersion : string;
         
         constructor(graphURL : string = '') {
             this.graphURL = graphURL;
@@ -40,7 +41,7 @@ module OOFB {
             OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, data, function() {
                 this.fetched = true;
                 setterCallback.apply(this, arguments);
-            });
+            }, this.apiVersion);
             
             return this;
         }

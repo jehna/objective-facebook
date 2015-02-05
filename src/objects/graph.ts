@@ -23,16 +23,17 @@ module OOFB {
         
         var uniq : number = 0;
         
-        export function api(endpoint : string, method : Method, params, callback) {
+        export function api(endpoint : string, method : Method, params, callback, version? : string) {
             
             var cbname = "__graph__" + (uniq++).toString();
+            version = typeof version === "string" ? version : "v2.2";
             
             params = params || {};
             params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
             
-            var url : string = "https://graph.facebook.com/v2.2" + endpoint + "?" + serialize(params);
+            var url : string = "https://graph.facebook.com/" + version + endpoint + "?" + serialize(params);
             
             var script = document.createElement('script');
             script.type = 'text/javascript';

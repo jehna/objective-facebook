@@ -43,7 +43,7 @@ var OOFB;
             OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, data, function () {
                 this.fetched = true;
                 setterCallback.apply(this, arguments);
-            });
+            }, this.apiVersion);
             return this;
         };
         return BaseObject;
@@ -199,13 +199,14 @@ var OOFB;
             return str.join("&");
         }
         var uniq = 0;
-        function api(endpoint, method, params, callback) {
+        function api(endpoint, method, params, callback, version) {
             var cbname = "__graph__" + (uniq++).toString();
+            version = typeof version === "string" ? version : "v2.2";
             params = params || {};
             params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
-            var url = "https://graph.facebook.com/v2.2" + endpoint + "?" + serialize(params);
+            var url = "https://graph.facebook.com/" + version + endpoint + "?" + serialize(params);
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = url;
@@ -242,6 +243,25 @@ var OOFB;
         };
         return AccessToken;
     })(OOFB.BaseObject);
+    var FacebookURL = (function (_super) {
+        __extends(FacebookURL, _super);
+        function FacebookURL(url) {
+            // Oh my. Using Graph API 1.0 is very bad.
+            this.apiVersion = "";
+            var username = /^(?:https?:\/\/)(?:www\.)?facebook.com\/([\w]+)$/.exec(url)[1];
+            _super.call(this, '/' + username);
+        }
+        FacebookURL.prototype.__fetch = function (setterCallback, data) {
+            _super.prototype.__fetch.call(this, function (data) {
+                for (var name in data) {
+                    this[name] = data[name];
+                }
+                setterCallback.call(this, data);
+            });
+            return this;
+        };
+        return FacebookURL;
+    })(OOFB.BaseObject);
     var Debug = (function () {
         function Debug() {
         }
@@ -252,6 +272,10 @@ var OOFB;
             enumerable: true,
             configurable: true
         });
+        Debug.facebookURL = function (url) {
+            // Oh my.. This is wrong in so very many levels
+            return new FacebookURL(url);
+        };
         return Debug;
     })();
     OOFB.Debug = Debug;

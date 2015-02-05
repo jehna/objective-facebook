@@ -36,7 +36,8 @@ module.exports = function(grunt) {
             files: ['src/**/*.ts', 'src/*.ts', 'test/**/*.js'],
             tasks: ['typescript', 'wrap', 'test'],
             options: {
-                livereload: true
+                livereload: true,
+                reload: true
             }
         },
         open: {
@@ -63,7 +64,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-wrap');
     grunt.loadNpmTasks('grunt-open');
     
-    grunt.registerTask('default', ['typescript', 'wrap', 'express', 'open', 'test', 'watch']);
+    grunt.registerTask('default', ['typescript', 'wrap', 'express', 'test', 'watch']);
     grunt.registerTask('test', ['karma']);
 
 };
