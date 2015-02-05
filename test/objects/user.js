@@ -11,7 +11,7 @@ describe('Object: User', function () {
     it('should fetch user information', function (done) {
         var user = new API.User(100000475343767);
         
-        user.success(function(user) {
+        user.get(function(user) {
             expect(user.fetched).toBe(true);
             expect(user.id).toBe('100000475343767');
             done();

@@ -10,7 +10,7 @@ module OOFB {
             this.fetched = false;
         }
         
-        success(callback : (self : BaseObject) => void) {
+        get(callback : (self : BaseObject) => void) : BaseObject {
             if (this.fetched) {
                 callback(this);
             } else {
@@ -24,19 +24,7 @@ module OOFB {
             return this;
         }
         
-        fail(callback : (error : any) => void) {
-            // Call when failed
-            return this;
-        }
-        finally(callback) {
-            if (this.fetched) {
-                callback();
-            } else {
-                // Call this thingie when fetch is done/undone
-            }
-            return this;
-        }
-        __fetch(setterCallback : (data: any) => void, data? : any) {
+        __fetch(setterCallback : (data: any) => void, data? : any) : BaseObject {
             // Construct an FB API object to fetch data for this motherficker
             OOFB.Graph.api.call(this, this.graphURL, OOFB.Graph.Method.GET, data, function() {
                 this.fetched = true;

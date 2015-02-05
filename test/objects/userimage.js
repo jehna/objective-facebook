@@ -11,7 +11,7 @@ describe('Object: UserImage', function () {
     it('should fetch user image', function (done) {
         var user = new API.User(100000475343767);
         
-        user.image.success(function(image) {
+        user.image.get(function(image) {
             expect(image.width).toBe(320);
             expect(image.height).toBe(320);
             

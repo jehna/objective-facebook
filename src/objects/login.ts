@@ -3,7 +3,7 @@ module OOFB {
         //API.appid = Math.random().toString();
         
         var login = new OOFB.BaseObject();
-        login.success(function(p) {
+        login.get(function(p) {
             callback(OOFB);
         });
         return login;
@@ -12,7 +12,7 @@ module OOFB {
         //API.appid = Math.random().toString();
         
         var logout = new OOFB.BaseObject();
-        logout.success(function(p) {
+        logout.get(function(p) {
             callback(OOFB);
         });
         return logout;

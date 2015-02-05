@@ -13,7 +13,7 @@ var OOFB;
             this.graphURL = graphURL;
             this.fetched = false;
         }
-        BaseObject.prototype.success = function (callback) {
+        BaseObject.prototype.get = function (callback) {
             if (this.fetched) {
                 callback(this);
             }
@@ -23,18 +23,6 @@ var OOFB;
                 this.__fetch(function (data) {
                     callback(this);
                 });
-            }
-            return this;
-        };
-        BaseObject.prototype.fail = function (callback) {
-            // Call when failed
-            return this;
-        };
-        BaseObject.prototype.finally = function (callback) {
-            if (this.fetched) {
-                callback();
-            }
-            else {
             }
             return this;
         };
@@ -159,7 +147,7 @@ var OOFB;
     function login(callback) {
         //API.appid = Math.random().toString();
         var login = new OOFB.BaseObject();
-        login.success(function (p) {
+        login.get(function (p) {
             callback(OOFB);
         });
         return login;
@@ -168,7 +156,7 @@ var OOFB;
     function logout(callback) {
         //API.appid = Math.random().toString();
         var logout = new OOFB.BaseObject();
-        logout.success(function (p) {
+        logout.get(function (p) {
             callback(OOFB);
         });
         return logout;

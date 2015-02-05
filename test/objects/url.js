@@ -7,7 +7,7 @@ describe('Object: Url debug', function () {
     
     it('should debug URL', function (done) {
         
-        API.Debug.facebookURL("https://www.facebook.com/zuck").success(function(zuck) {
+        API.Debug.facebookURL("https://www.facebook.com/zuck").get(function(zuck) {
             expect(zuck.id).toBe("4");
             expect(zuck.first_name).toBe("Mark");
             done();

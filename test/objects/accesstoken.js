@@ -7,7 +7,7 @@ describe('Object: AccessToken', function () {
     
     it('should validate access token', function (done) {
         
-        API.Debug.access_token.success(function(access_token) {
+        API.Debug.access_token.get(function(access_token) {
             expect(access_token.is_valid).toBe(true);
             done();
             
