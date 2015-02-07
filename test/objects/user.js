@@ -40,12 +40,28 @@ describe('Object: User', function () {
     
     
     
-    it('should fetch user albums', function (done) {
+    it('should fetch user posts (feed)', function (done) {
         
-        user.albums.get(function(albums) {
-            console.log(albums);
+        user.posts.get(function(posts) {
+            expect(posts.length).toBeGreaterThan(0);
+            posts.forEach(function(post) {
+                expect(post.id).toBeDefined();
+            });
             done();
         });
+    });
+    
+    
+    it('should fetch posts on user\'s wall (home)', function (done) {
+        
+        user.wall.get(function(posts) {
+            expect(false).toBe(true);
+            done();
+        }).error(function() {
+            expect(true).toBe(true);
+            done();
+        });
+        
     });
     
 });

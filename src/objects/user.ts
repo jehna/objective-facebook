@@ -1,10 +1,13 @@
 /// <reference path="baseobject.ts"/>
 /// <reference path="userimage.ts"/>
 /// <reference path="album.ts"/>
+/// <reference path="post.ts"/>
 /// <reference path="collection.ts"/>
 
 module OOFB {
     export class User extends BaseObject {
+        
+        name : string;
         
         constructor(user) {
             // User can be one of the following:
@@ -28,21 +31,31 @@ module OOFB {
             }
         }
         
-        __fetch(setterCallback : (data: any) => void) {
-            // Construct an FB API object to fetch data for this motherficker
-            super.__fetch(function(data) {
-                for(var name in data) {
-                    this[name] = data[name];
-                }
-                setterCallback.apply(this, arguments);
-            });
-            
-            return this;
+        __setData(data : any) {
+            for(var name in data) {
+                this[name] = data[name];
+            }
         }
         
         get albums() : AlbumCollection {
             // TODO: This is a stub
             return new AlbumCollection(this.graphURL + '/albums');
+        }
+        
+        get feed() : Collection {
+            return new PostCollection(this.graphURL + '/feed');
+        }
+        
+        get posts() : PostCollection {
+            return this.feed;
+        }
+        
+        get home() : PostCollection {
+            return new PostCollection(this.graphURL + '/home');
+        }
+        
+        get wall() : PostCollection {
+            return this.home;
         }
         
         get image() : UserImage {

@@ -10,6 +10,7 @@ var OOFB;
     var BaseObject = (function () {
         function BaseObject(graphURL) {
             if (graphURL === void 0) { graphURL = ''; }
+            this.__errorCallbacks = [];
             this.graphURL = graphURL;
             this.fetched = false;
         }
@@ -26,13 +27,24 @@ var OOFB;
             }
             return this;
         };
+        BaseObject.prototype.error = function (callback) {
+            this.__errorCallbacks.push(callback);
+            return this;
+        };
         BaseObject.prototype.__fetch = function (setterCallback, data) {
             // Construct an FB API object to fetch data for this motherficker
             OOFB.Graph.api.call(this, this.graphURL, 0 /* GET */, data, function () {
                 this.fetched = true;
+                this.__setData.apply(this, arguments);
                 setterCallback.apply(this, arguments);
+            }, function (error) {
+                for (var i in this.__errorCallbacks) {
+                    this.__errorCallbacks[i].call(this, error);
+                }
             }, this.apiVersion);
             return this;
+        };
+        BaseObject.prototype.__setData = function (data) {
         };
         return BaseObject;
     })();
@@ -70,10 +82,12 @@ var OOFB;
             if (this.height)
                 params['height'] = this.height;
             _super.prototype.__fetch.call(this, function (data) {
-                this.url = data.data.url;
                 setterCallback.apply(this, arguments);
             }, params);
             return this;
+        };
+        Image.prototype.__setData = function (data) {
+            this.url = data.data.url;
         };
         return Image;
     })(OOFB.BaseObject);
@@ -103,8 +117,14 @@ var OOFB;
 (function (OOFB) {
     var Collection = (function (_super) {
         __extends(Collection, _super);
-        function Collection() {
-            _super.apply(this, arguments);
+        function Collection(url) {
+            _super.call(this, url);
+            var injectMethods = Object.getOwnPropertyNames(Array.prototype);
+            for (var name in injectMethods) {
+                var method = injectMethods[name];
+                // Add the method to the collection.
+                this[method] = Array.prototype[method];
+            }
         }
         return Collection;
     })(OOFB.BaseObject);
@@ -127,19 +147,65 @@ var OOFB;
         function AlbumCollection() {
             _super.apply(this, arguments);
         }
-        AlbumCollection.prototype.__fetch = function (setterCallback) {
-            _super.prototype.__fetch.call(this, function (data) {
-                console.log(data);
-            });
-            return this;
-        };
         return AlbumCollection;
     })(OOFB.Collection);
     OOFB.AlbumCollection = AlbumCollection;
 })(OOFB || (OOFB = {}));
 /// <reference path="baseobject.ts"/>
+/// <reference path="collection.ts"/>
+/// <reference path="user.ts"/>
+var OOFB;
+(function (OOFB) {
+    var Post = (function (_super) {
+        __extends(Post, _super);
+        function Post() {
+            _super.apply(this, arguments);
+        }
+        //with_tags : User[];
+        Post.prototype.__setData = function (data) {
+            this.id = data.id;
+            this.caption = data.caption;
+            this.created_time = new Date(data.created_time);
+            this.description = data.description;
+            this.from = new OOFB.User(parseInt(data.from.id));
+            this.from.name = data.from.name;
+            this.icon = data.icon;
+            this.is_hidden = !!data.is_hidden;
+            this.link = data.link;
+            this.message = data.message;
+            this.name = data.name;
+            this.picture = data.picture;
+            if (typeof data.shares !== "undefined")
+                this.shares = parseInt(data.shares);
+            this.source = data.source;
+            this.story = data.story;
+            this.updated_time = new Date(data.updated_time);
+        };
+        return Post;
+    })(OOFB.BaseObject);
+    OOFB.Post = Post;
+    var PostCollection = (function (_super) {
+        __extends(PostCollection, _super);
+        function PostCollection() {
+            _super.apply(this, arguments);
+        }
+        PostCollection.prototype.__setData = function (data) {
+            for (var i in data.data) {
+                var postData = data.data[i];
+                var post = new Post();
+                post.fetched = true;
+                post.__setData(postData);
+                this['push'](post);
+            }
+        };
+        return PostCollection;
+    })(OOFB.Collection);
+    OOFB.PostCollection = PostCollection;
+})(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
 /// <reference path="userimage.ts"/>
 /// <reference path="album.ts"/>
+/// <reference path="post.ts"/>
 /// <reference path="collection.ts"/>
 var OOFB;
 (function (OOFB) {
@@ -162,19 +228,43 @@ var OOFB;
                 this.graphURL = '/me';
             }
         }
-        User.prototype.__fetch = function (setterCallback) {
-            // Construct an FB API object to fetch data for this motherficker
-            _super.prototype.__fetch.call(this, function (data) {
-                for (var name in data) {
-                    this[name] = data[name];
-                }
-                setterCallback.apply(this, arguments);
-            });
-            return this;
+        User.prototype.__setData = function (data) {
+            for (var name in data) {
+                this[name] = data[name];
+            }
         };
         Object.defineProperty(User.prototype, "albums", {
             get: function () {
+                // TODO: This is a stub
                 return new OOFB.AlbumCollection(this.graphURL + '/albums');
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "feed", {
+            get: function () {
+                return new OOFB.PostCollection(this.graphURL + '/feed');
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "posts", {
+            get: function () {
+                return this.feed;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "home", {
+            get: function () {
+                return new OOFB.PostCollection(this.graphURL + '/home');
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "wall", {
+            get: function () {
+                return this.home;
             },
             enumerable: true,
             configurable: true
@@ -242,20 +332,26 @@ var OOFB;
             return str.join("&");
         }
         var uniq = 0;
-        function api(endpoint, method, params, callback, version) {
+        function api(endpoint, method, params, successCallback, errorCallback, version) {
             var cbname = "__graph__" + (uniq++).toString();
             version = typeof version === "string" ? version : "v2.2";
             params = params || {};
             params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
+            params['date_format'] = 'c';
             var url = "https://graph.facebook.com/" + version + endpoint + "?" + serialize(params);
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = url;
             var callee = this;
-            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function () {
-                callback.apply(callee, arguments);
+            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function (data) {
+                if (data.error) {
+                    // TODO: Proper error messages
+                    errorCallback.call(callee, data.error);
+                    return;
+                }
+                successCallback.apply(callee, arguments);
                 global.OOFB.__globalCallbacks[instance_namespace][cbname] = null;
                 document.getElementsByTagName('head')[0].removeChild(script);
             };
@@ -274,14 +370,16 @@ var OOFB;
         }
         AccessToken.prototype.__fetch = function (setterCallback) {
             _super.prototype.__fetch.call(this, function (data) {
-                for (var name in data.data) {
-                    this[name] = data.data[name];
-                }
                 setterCallback.apply(this, arguments);
             }, {
                 input_token: access_token,
             });
             return this;
+        };
+        AccessToken.prototype.__setData = function (data) {
+            for (var name in data.data) {
+                this[name] = data.data[name];
+            }
         };
         return AccessToken;
     })(OOFB.BaseObject);
@@ -295,12 +393,14 @@ var OOFB;
         }
         FacebookURL.prototype.__fetch = function (setterCallback, data) {
             _super.prototype.__fetch.call(this, function (data) {
-                for (var name in data) {
-                    this[name] = data[name];
-                }
                 setterCallback.call(this, data);
             });
             return this;
+        };
+        FacebookURL.prototype.__setData = function (data) {
+            for (var name in data) {
+                this[name] = data[name];
+            }
         };
         return FacebookURL;
     })(OOFB.BaseObject);

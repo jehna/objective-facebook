@@ -29,11 +29,12 @@ module OOFB {
             if (this.height) params['height'] = this.height;
             
             super.__fetch(function(data) {
-                this.url = data.data.url;
                 setterCallback.apply(this, arguments);
             }, params);
             return this;
         }
-        
+        __setData(data : any) {
+            this.url = data.data.url;
+        }
     }
 }

@@ -23,7 +23,7 @@ module OOFB {
         
         var uniq : number = 0;
         
-        export function api(endpoint : string, method : Method, params, callback, version? : string) {
+        export function api(endpoint : string, method : Method, params, successCallback, errorCallback, version? : string) {
             
             var cbname = "__graph__" + (uniq++).toString();
             version = typeof version === "string" ? version : "v2.2";
@@ -32,6 +32,7 @@ module OOFB {
             params['callback'] = _global + ".OOFB.__globalCallbacks." + instance_namespace + "." + cbname;
             params['method'] = method;
             params['access_token'] = access_token;
+            params['date_format'] = 'c';
             
             var url : string = "https://graph.facebook.com/" + version + endpoint + "?" + serialize(params);
             
@@ -40,8 +41,13 @@ module OOFB {
             script.src = url;
             
             var callee = this;
-            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function() {
-                callback.apply(callee, arguments);
+            global.OOFB.__globalCallbacks[instance_namespace][cbname] = function(data) {
+                if (data.error) {
+                    // TODO: Proper error messages
+                    errorCallback.call(callee, data.error);
+                    return;
+                }
+                successCallback.apply(callee, arguments);
                 global.OOFB.__globalCallbacks[instance_namespace][cbname] = null;
                 document.getElementsByTagName('head')[0].removeChild(script);
             }

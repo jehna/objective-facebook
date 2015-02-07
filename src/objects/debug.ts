@@ -9,15 +9,18 @@ module OOFB {
         __fetch(setterCallback : (data : any) => void) {
             
             super.__fetch(function(data) {
-                for (var name in data.data){
-                    this[name] = data.data[name];
-                }
                 setterCallback.apply(this, arguments);
             }, {
                 input_token: access_token,
                 //access_token: access_token // Disabled for now, should not need this
             });
             return this;
+        }
+        
+        __setData(data : any) {
+            for (var name in data.data){
+                this[name] = data.data[name];
+            }
         }
     }
     
@@ -31,12 +34,15 @@ module OOFB {
         
         __fetch(setterCallback : (data: any) => void, data? : any) : BaseObject {
             super.__fetch(function(data) {
-                for(var name in data) {
-                    this[name] = data[name];
-                }
                 setterCallback.call(this, data);
             });
             return this;
+        }
+        
+        __setData(data : any) {
+            for(var name in data) {
+                this[name] = data[name];
+            }
         }
     }
     
