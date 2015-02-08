@@ -11,7 +11,7 @@ Using the API is faily simple, just include the app.js in your project:
 
 And fire up your own instance of the API:
 ```javascript
-var API = new OOFB('yur_api_key_here');
+var API = new OOFB('your_access_token_here');
 
 // Get the info on Mark Zuckenberg (he's id is '4')
 new API.User(4).get(function(user) {
