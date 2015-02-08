@@ -18,7 +18,7 @@ var mark = new API.User(4);
 
 // Since that is a promise, we can fire it up (to fetch the data) like this:
 mark.get(function(user) {
-    console.log(user.name);
+    console.log(user.name); // Prints "Mark Zuckerberg"
 });
 
 ```
