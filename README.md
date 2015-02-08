@@ -11,10 +11,10 @@ Using the API is faily simple, just include the app.js in your project:
 
 And fire up your own instance of the API:
 ```javascript
-var API = new OOFB('your_access_token_here');
+var FB = new OOFB('your_access_token_here');
 
 // Get the info on Mark Zuckenberg (he's id is '4')
-var mark = new API.User(4);
+var mark = new FB.User(4);
 
 // Since that is a promise, we can fire it up (to fetch the data) like this:
 mark.get(function(user) {
