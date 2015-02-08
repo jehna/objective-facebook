@@ -1,5 +1,5 @@
 # Objective Facebook JS 0.1
-> A simpler, better, ojbective-orientated Facebook JS API wrapper
+> A simpler, better, object-oriented Facebook JS API wrapper
 
 Works currently best reading the public API.
 
