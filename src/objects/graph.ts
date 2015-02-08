@@ -1,3 +1,4 @@
+/// <reference path="grapherror.ts"/>
 module OOFB {
     export module Graph {
         export enum Method {
@@ -44,7 +45,7 @@ module OOFB {
             global.OOFB.__globalCallbacks[instance_namespace][cbname] = function(data) {
                 if (data.error) {
                     // TODO: Proper error messages
-                    errorCallback.call(callee, data.error);
+                    errorCallback.call(callee, new GraphError(data.error));
                     return;
                 }
                 successCallback.apply(callee, arguments);

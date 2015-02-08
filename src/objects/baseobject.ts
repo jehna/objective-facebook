@@ -1,3 +1,4 @@
+/// <reference path="grapherror.ts"/>
 module OOFB {
     export class BaseObject {
         
@@ -25,7 +26,7 @@ module OOFB {
             return this;
         }
         
-        error(callback : (error) => void) : BaseObject {
+        error(callback : (error : GraphError) => void) : BaseObject {
             this.__errorCallbacks.push(callback);
             return this;
         }

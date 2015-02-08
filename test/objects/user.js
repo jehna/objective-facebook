@@ -64,4 +64,17 @@ describe('Object: User', function () {
         
     });
     
+    
+    it('should fetch user\'s photos', function (done) {
+        
+        user.images.get(function(images) {
+            expect(false).toBe(true);
+            done();
+        }).error(function(error) {
+            console.log(error);
+            done();
+        });
+        
+    });
+    
 });

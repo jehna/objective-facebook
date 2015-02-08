@@ -1,4 +1,5 @@
 /// <reference path="baseobject.ts"/>
+/// <reference path="collection.ts"/>
 
 module OOFB {
     export class Image extends BaseObject {
@@ -36,5 +37,22 @@ module OOFB {
         __setData(data : any) {
             this.url = data.data.url;
         }
+    }
+    
+    export class ImageCollection extends Collection {
+        
+        __setData(data : any) {
+            console.log("moooi", data);
+            /*
+            for(var i in data.data) {
+                var imageData = data.data[i];
+                var image = new Image();
+                image.fetched = true;
+                image.__setData(postData);
+                this['push'](post);
+            }
+            */
+        }
+        
     }
 }

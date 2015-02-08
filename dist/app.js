@@ -7,6 +7,26 @@ global = window ? window : global;
 var _global = window ? 'window' : 'global';
 var OOFB;
 (function (OOFB) {
+    var GraphError = (function () {
+        function GraphError(error) {
+            this.message = this.messageWithCode(error.code);
+            this.code = error.code;
+        }
+        GraphError.prototype.messageWithCode = function (code) {
+            switch (code) {
+                case 102:
+                    return 'You need to log in';
+                default:
+                    return 'Unknown error';
+            }
+        };
+        return GraphError;
+    })();
+    OOFB.GraphError = GraphError;
+})(OOFB || (OOFB = {}));
+/// <reference path="grapherror.ts"/>
+var OOFB;
+(function (OOFB) {
     var BaseObject = (function () {
         function BaseObject(graphURL) {
             if (graphURL === void 0) { graphURL = ''; }
@@ -59,6 +79,25 @@ var __extends = this.__extends || function (d, b) {
 };
 var OOFB;
 (function (OOFB) {
+    var Collection = (function (_super) {
+        __extends(Collection, _super);
+        function Collection(url) {
+            _super.call(this, url);
+            var injectMethods = Object.getOwnPropertyNames(Array.prototype);
+            for (var name in injectMethods) {
+                var method = injectMethods[name];
+                // Add the method to the collection.
+                this[method] = Array.prototype[method];
+            }
+        }
+        return Collection;
+    })(OOFB.BaseObject);
+    OOFB.Collection = Collection;
+})(OOFB || (OOFB = {}));
+/// <reference path="baseobject.ts"/>
+/// <reference path="collection.ts"/>
+var OOFB;
+(function (OOFB) {
     var Image = (function (_super) {
         __extends(Image, _super);
         function Image(graphURL, width, height) {
@@ -92,6 +131,26 @@ var OOFB;
         return Image;
     })(OOFB.BaseObject);
     OOFB.Image = Image;
+    var ImageCollection = (function (_super) {
+        __extends(ImageCollection, _super);
+        function ImageCollection() {
+            _super.apply(this, arguments);
+        }
+        ImageCollection.prototype.__setData = function (data) {
+            console.log("moooi", data);
+            /*
+            for(var i in data.data) {
+                var imageData = data.data[i];
+                var image = new Image();
+                image.fetched = true;
+                image.__setData(postData);
+                this['push'](post);
+            }
+            */
+        };
+        return ImageCollection;
+    })(OOFB.Collection);
+    OOFB.ImageCollection = ImageCollection;
 })(OOFB || (OOFB = {}));
 /// <reference path="image.ts"/>
 var OOFB;
@@ -111,24 +170,6 @@ var OOFB;
         return UserImage;
     })(OOFB.Image);
     OOFB.UserImage = UserImage;
-})(OOFB || (OOFB = {}));
-/// <reference path="baseobject.ts"/>
-var OOFB;
-(function (OOFB) {
-    var Collection = (function (_super) {
-        __extends(Collection, _super);
-        function Collection(url) {
-            _super.call(this, url);
-            var injectMethods = Object.getOwnPropertyNames(Array.prototype);
-            for (var name in injectMethods) {
-                var method = injectMethods[name];
-                // Add the method to the collection.
-                this[method] = Array.prototype[method];
-            }
-        }
-        return Collection;
-    })(OOFB.BaseObject);
-    OOFB.Collection = Collection;
 })(OOFB || (OOFB = {}));
 /// <reference path="baseobject.ts"/>
 /// <reference path="collection.ts"/>
@@ -283,6 +324,20 @@ var OOFB;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(User.prototype, "photos", {
+            get: function () {
+                return new OOFB.ImageCollection(this.graphURL + '/photos');
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(User.prototype, "images", {
+            get: function () {
+                return this.photos;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return User;
     })(OOFB.BaseObject);
     OOFB.User = User;
@@ -308,6 +363,7 @@ var OOFB;
     }
     OOFB.logout = logout;
 })(OOFB || (OOFB = {}));
+/// <reference path="grapherror.ts"/>
 var OOFB;
 (function (OOFB) {
     var Graph;
@@ -348,7 +404,7 @@ var OOFB;
             global.OOFB.__globalCallbacks[instance_namespace][cbname] = function (data) {
                 if (data.error) {
                     // TODO: Proper error messages
-                    errorCallback.call(callee, data.error);
+                    errorCallback.call(callee, new OOFB.GraphError(data.error));
                     return;
                 }
                 successCallback.apply(callee, arguments);

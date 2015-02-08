@@ -66,5 +66,12 @@ module OOFB {
             return new UserImage(this.graphURL + '/picture');
         }
         
+        get photos() : ImageCollection {
+            return new ImageCollection(this.graphURL + '/photos');
+        }
+        
+        get images() : ImageCollection {
+            return this.photos;
+        }
     }
 }
