@@ -1,5 +1,5 @@
 # Objective Facebook JS 0.1
-> A simpler, better, object-oriented Facebook JS API wrapper
+> A simpler, better, object-oriented Facebook JS SDK
 
 Works currently best reading the public API.
 
@@ -9,7 +9,7 @@ Using the API is faily simple, just include the app.js in your project:
 <script src="app.js"></script>
 ```
 
-And fire up your own instance of the API:
+And fire up your own instance of the SDK:
 ```javascript
 var FB = new OOFB('your_access_token_here');
 
