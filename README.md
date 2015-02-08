@@ -14,7 +14,10 @@ And fire up your own instance of the API:
 var API = new OOFB('your_access_token_here');
 
 // Get the info on Mark Zuckenberg (he's id is '4')
-new API.User(4).get(function(user) {
+var mark = new API.User(4);
+
+// Since that is a promise, we can fire it up (to fetch the data) like this:
+mark.get(function(user) {
     console.log(user.name);
 });
 
